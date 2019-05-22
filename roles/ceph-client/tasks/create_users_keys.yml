@@ -20,7 +20,7 @@
     name: "{{ item }}"
     groups: _filtered_clients
   with_items: "{{ groups[client_group_name] }}"
-  when: (hostvars[item]['ansible_architecture'] == 'x86_64') or (not containerized_deployment)
+  when: (hostvars[item]['ansible_architecture'] == 'x86_64') or (not containerized_deployment | bool)
 
 - name: set_fact delegated_node
   set_fact:
@@ -48,7 +48,7 @@
   with_items: "{{ keys }}"
   delegate_to: "{{ delegated_node }}"
   when:
-    - cephx
+    - cephx | bool
     - keys | length > 0
     - inventory_hostname == groups.get('_filtered_clients') | first
 
@@ -59,13 +59,13 @@
   register: slurp_client_keys
   delegate_to: "{{ delegated_node }}"
   when:
-    - cephx
+    - cephx | bool
     - keys | length > 0
     - inventory_hostname == groups.get('_filtered_clients') | first
 
 - name: pool related tasks
   when:
-    - condition_copy_admin_key
+    - condition_copy_admin_key | bool
     - inventory_hostname == groups.get('_filtered_clients', []) | first
   block:
     - name: list existing pool(s)

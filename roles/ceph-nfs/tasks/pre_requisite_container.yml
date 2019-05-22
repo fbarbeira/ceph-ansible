@@ -1,19 +1,36 @@
 ---
+<<<<<<< HEAD
 - name: set_fact admin_keyring
   set_fact:
     admin_keyring:
       - "/etc/ceph/{{ cluster }}.client.admin.keyring"
   when: copy_admin_key
+=======
+- name: keyring related tasks
+  block:
+    - name: set_fact admin_keyring
+      set_fact:
+        admin_keyring:
+          - "/etc/ceph/{{ cluster }}.client.admin.keyring"
+      when: copy_admin_key | bool
+>>>>>>> ab54fe20e... ansible: use 'bool' filter on boolean conditionals
 
 - name: set_fact ceph_config_keys
   set_fact:
     ceph_config_keys:
       - /var/lib/ceph/bootstrap-rgw/{{ cluster }}.keyring
 
+<<<<<<< HEAD
 - name: merge ceph_config_keys and admin_keyring
   set_fact:
     ceph_config_keys: "{{ ceph_config_keys + admin_keyring }}"
   when: copy_admin_key
+=======
+    - name: merge ceph_config_keys and admin_keyring
+      set_fact:
+        ceph_config_keys: "{{ ceph_config_keys + admin_keyring }}"
+      when: copy_admin_key | bool
+>>>>>>> ab54fe20e... ansible: use 'bool' filter on boolean conditionals
 
 - name: stat for config and keys
   stat:
@@ -49,6 +66,12 @@
     mode: "0644"
   when: ceph_nfs_dynamic_exports
 
+<<<<<<< HEAD
 - name: reload dbus configuration
   command: "killall -SIGHUP dbus-daemon"
   when: ceph_nfs_dynamic_exports
+=======
+    - name: reload dbus configuration
+      command: "killall -SIGHUP dbus-daemon"
+  when: ceph_nfs_dynamic_exports | bool
+>>>>>>> ab54fe20e... ansible: use 'bool' filter on boolean conditionals
